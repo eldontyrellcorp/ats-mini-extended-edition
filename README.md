@@ -1,4 +1,4 @@
-# ATS Mini firmware – extended edition
+# ON4SSC firmware 
 
 Firmware for the SI4732 (ESP32-S3) Mini/Pocket Receiver, with decoders, propagation tools, weather and a multilingual interface added.
 
