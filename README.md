@@ -12,7 +12,7 @@ All the credit for the receiver firmware itself (tuning, display, menus, memorie
 
 ### Added
 
-* **Speaker On/Off** in the short press menu of the decoders (FT8, FT4, CW, RTTY, PSK31, SSTV, WEFAX) and of the live waterfall: decode silently with the ADC input on IO11. The speaker comes back when leaving the decoder, and the setting is remembered.
+* **Speaker On/Off** in the short press menu of the decoders (FT8, FT4, CW, RTTY, PSK31, SSTV, WEFAX) and of the live waterfall: decode silently with the ADC input on IO11. The speaker comes back when leaving the decoder, and the setting is remembered. (**NOT WORKING** but will not harm, i'll remove the option in the next release)
 * **FT8 and FT4 tuning step** of 100 Hz, 500 Hz or 1 kHz, selected from the short press menu.
 * **ETM sensitivity** (Low, Normal, High) in the short press menu of the ETM screen: High catches weaker stations. The band is scanned again when it changes, and the setting is remembered.
 * **REST API** on the web server, available whenever Wi-Fi is on: read the status, control the receiver and download the saved SSTV and WEFAX pictures. See [REST API](#rest-api) below.
