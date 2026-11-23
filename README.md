@@ -1,4 +1,4 @@
-# ON4SSC firmware 
+# ATS Mini firmware – extended edition
 
 Firmware for the SI4732 (ESP32-S3) Mini/Pocket Receiver, with decoders, propagation tools, weather and a multilingual interface added.
 
@@ -8,11 +8,48 @@ This firmware is based on the original ATS Mini firmware created by **Max Arnold
 
 All the credit for the receiver firmware itself (tuning, display, menus, memories, Wi-Fi/Bluetooth, web interface, online updates and the rest of the base features) goes to Max Arnold and the contributors of that project. This edition adds the features listed below on top of it. It is released under the same MIT license.
 
+## What is new in version 1.04
+
+### Added
+
+* **SWL log** (Tools page and Misc menu): the FT8/FT4 stations heard are kept as an ADIF file with an approximate signal report, to browse on the receiver (grouped by day, with a band, mode, upload and grid filter, and fast scrolling) or on the new SWL Log web page, download, or upload to an eQSL.cc SWL account.
+* **Microphone input again:** the INMP441 I2S microphone can be chosen with **Input: Mic** in the Decode menu, besides the IO11 line-in (ADC, default).
+* **IO43 Pin** setting: move the microphone SD line, or the PCM5102 DAC DIN line (with its LRCK on IO13), to IO43 to wire both the microphone and the DAC.
+* **Quick favorites:** five buttons opened from the quick menu of the RADIO page (click, then click on Favorites), each holding a receiver frequency or an Internet radio station, tuned or played with one click.
+* **Internet radio, My stations:** up to 20 stream URLs of your own, entered with their names on the web Config page.
+* **Volume from the decoders:** **Knob: volume** in the short press menu of the decoders and of the live waterfall turns the encoder into a volume control, **Knob: tune** back to tuning.
+* **Input level meter** in the title bar of the decoders and of the live waterfall: the live level of the ADC or microphone input, red when it clips.
+
+### Changed
+
+* **FT8/FT4** decode on any frequency, for example 27.265 MHz in the CB band, not only near the standard amateur frequencies.
+
+## What is new in version 1.03
+
+### Added
+
+* **Internet radio** (Tools page and Misc menu): stations from the [radio-browser.info](https://www.radio-browser.info) directory (top stations, your country, genres, search by name) and up to 32 favorites, played through a PCM5102 DAC wired to IO12 (BCK), IO13 (DIN) and IO14 (LRCK), with GPIO44 driving its XSMT (mute) pin. Turn on **PCM5102 DAC** in Settings to enable it; otherwise the entry is grayed out.
+* **Beacons** (Decode menu and Tools page): monitor the 18 NCDXF/IARU International Beacon Project beacons on 14.100 ... 28.200 MHz and count the dashes heard (100 W, 10 W, 1 W, 100 mW), on one band or following one beacon across the five bands.
+* **Bricks**, a brick-breaking game played with the encoder (Tools page and Misc menu), with levels and a saved best score.
+* **Wi-Fi Power** setting (2 ... 19.5 dBm) to lower the Wi-Fi transmit power and keep the voltage regulator cooler.
+* **FT8/FT4:** scrollable list of the decoded messages and a choice of receiver bandwidth (1.2k, 2.2k, 3.0k, 4.0k) in the short press menu.
+* **RTTY:** **Tones: hold** option to stay on the decoded signal instead of switching to a stronger one.
+
+### Changed
+
+* The audio decoders use the IO11 line-in (ADC) only; the INMP441 I2S microphone input was removed, its pins are used by the PCM5102 DAC.
+* The Tools page continues on a second page when there are more tiles than fit on the screen.
+* The Speaker option was removed from the FT8/FT4 menu; the speaker stays on in these decoders.
+
+### Fixed
+
+* The I2S clocks of the DAC are stopped when leaving the Internet radio, and its pins are held low otherwise, to avoid birdies on HF.
+
 ## What is new in version 1.02
 
 ### Added
 
-* **Speaker On/Off** in the short press menu of the decoders (FT8, FT4, CW, RTTY, PSK31, SSTV, WEFAX) and of the live waterfall: decode silently with the ADC input on IO11. The speaker comes back when leaving the decoder, and the setting is remembered. (**NOT WORKING** but will not harm, i'll remove the option in the next release)
+* **Speaker On/Off** in the short press menu of the decoders (FT8, FT4, CW, RTTY, PSK31, SSTV, WEFAX) and of the live waterfall: decode silently with the ADC input on IO11. The speaker comes back when leaving the decoder, and the setting is remembered.
 * **FT8 and FT4 tuning step** of 100 Hz, 500 Hz or 1 kHz, selected from the short press menu.
 * **ETM sensitivity** (Low, Normal, High) in the short press menu of the ETM screen: High catches weaker stations. The band is scanned again when it changes, and the setting is remembered.
 * **REST API** on the web server, available whenever Wi-Fi is on: read the status, control the receiver and download the saved SSTV and WEFAX pictures. See [REST API](#rest-api) below.
@@ -48,12 +85,13 @@ All the credit for the receiver firmware itself (tuning, display, menus, memorie
 * **FT8** and **FT4** with a waterfall, UTC slot timing, decoded messages with CQ calls highlighted, and a list of heard stations with country and distance.
 * **Automatic band hopping** for FT8 and FT4 across the amateur bands that the propagation estimate says are likely to be open.
 * **CW** with presets.
-* **RTTY** with presets for amateur and weather-service frequencies (DWD), several baud rate and shift modes, and automatic tone finding.
+* **RTTY** with presets for amateur and weather-service frequencies (DWD), several baud rate and shift modes, automatic tone finding and a tone hold option.
 * **PSK31** (BPSK31) with automatic carrier tracking, calling frequencies and a squelch.
 * **SSTV** image reception: Martin, Scottie, Robot and black-and-white modes, with a remembered mode.
 * **WEFAX** weather fax reception.
-* **Audio input choice:** an INMP441 I2S microphone, or the receiver audio read directly from the ADC on IO11 (V4A/V4B) for a cleaner signal that does not depend on the speaker volume.
-* **Speaker On/Off** while decoding with the ADC input, from the short press menu of each decoder and of the live waterfall.
+* **Beacons:** NCDXF/IARU International Beacon Project monitor.
+* **Audio input:** the receiver audio read directly from the ADC on IO11 (V4A/V4B), a clean signal that does not depend on the speaker volume, or an INMP441 I2S microphone on IO12-14 (not together with the PCM5102 DAC).
+* **Speaker On/Off** while decoding with the ADC input, from the short press menu of the decoders (except FT8/FT4) and of the live waterfall.
 * **Waterfall colors** (seven presets) and a **noise filter** that keeps the background dark so that signals stand out, with a live preview.
 
 ### Misc menu
@@ -65,6 +103,9 @@ All the credit for the receiver firmware itself (tuning, display, menus, memorie
 * **On air now:** the broadcast stations from the EiBi schedule that are on the air right now in the current band.
 * **Spectrum and waterfall** for every band the receiver covers (VHF, MW, SW, amateur bands).
 * **Space-weather alert** for solar flares and geomagnetic storms.
+* **Internet radio** through a PCM5102 DAC, with favorites.
+* **Bricks** game.
+* **SWL log** of the FT8/FT4 stations heard, with ADIF download and eQSL upload.
 
 ### Interface
 
