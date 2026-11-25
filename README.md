@@ -2,7 +2,7 @@
 
 Firmware for the SI4732 (ESP32-S3) Mini/Pocket Receiver, with digital mode decoders, Internet radio, MQTT, propagation tools, weather and a multilingual interface added.
 
-Latest version: **1.09**. Download it from the [Releases](https://github.com/eldontyrellcorp/ats-mini-extended-edition/releases) page.
+Latest version: **1.10**. Download it from the [Releases](https://github.com/eldontyrellcorp/ats-mini-extended-edition/releases) page.
 
 ## Credits
 
@@ -72,7 +72,7 @@ From 1.04 or older, upload `ats-mini.ino.bin` with **Manual upload** on the web 
 * **Five pages:** RADIO, SIGNAL, DECODE, TOOLS and SETUP. Press and rotate the knob to flip pages, rotate to choose a tile, click to open it, hold (0.3 s) to go back to the RADIO page.
 * **Quick menu:** a click on the RADIO page opens it: favorites, volume, band, mode, step, bandwidth, AGC, squelch, SoftMute, AVC, frequency.
 * **Quick favorites:** five buttons, each a frequency or an Internet radio station, recalled with one click.
-* **Memories screen:** a double-click on the RADIO page lists the stored memories like the ETM screen, saves the current frequency in one click with an automatic name, and scans the memories. See [Memories](#memories).
+* **Memories screen:** a double-click on the RADIO page lists the stored memories like the ETM screen, with their names and frequencies, saves the current frequency with an automatic name, and scans the memories. See [Memories](#memories).
 * **ETM (Easy Tuning Mode):** scans the band once and steps through the stations found, with a Low, Normal or High sensitivity.
 * **Languages:** English, French, Dutch and German.
 * **Themes:** twelve additional color themes, followed by all the new screens.
@@ -81,16 +81,16 @@ From 1.04 or older, upload `ats-mini.ino.bin` with **Manual upload** on the web 
 
 ### Decoders (DECODE page)
 
-* **FT8** and **FT4**: waterfall, UTC slot timing, decoded messages with CQ highlighted, list of the stations heard with country and distance, scrolling, 1.2k ... 4.0k bandwidth, 100 Hz ... 1 kHz tuning step, automatic band hopping across the open bands, on any frequency (also CB).
+* **FT8** and **FT4**: waterfall, UTC slot timing, decoded messages with CQ highlighted (7 lines in a small font, or 4 in a larger one), list of the stations heard with country and distance, scrolling, 1.2k ... 4.0k bandwidth, 100 Hz ... 1 kHz tuning step, automatic band hopping across the open bands, on any frequency (also CB).
 * **CW** with presets, **RTTY** (amateur and DWD weather presets, baud rate and shift, automatic tones, tone hold), **PSK31** (carrier tracking, squelch).
-* **SSTV** (Martin, Scottie, Robot, B/W) and **WEFAX**, with up to five saved pictures.
+* **SSTV** (Martin, Scottie, Robot, PD, B/W; automatic from the VIS header, or a chosen mode with **Start now**) and **WEFAX**, with up to five saved pictures.
 * **Beacons:** the 18 NCDXF/IARU beacons on 14.100 ... 28.200 MHz.
 * **Input:** the receiver audio on IO11 (ADC, default, with Wi-Fi off) or an INMP441 I2S microphone (**Input: Mic**, works with Wi-Fi on).
 * In every decoder: input level meter, speaker on/off, knob as volume control, seven waterfall color presets and a noise filter.
 
 ### Tools (TOOLS and SIGNAL pages)
 
-* **Weather** for your home city (now, 24 hours, 10 days), **Propagation** with a grey-line map, **Best band now**, **On air now** (EiBi), **Space-weather alert**.
+* **Weather** for your home location anywhere in the world (city search worldwide, coordinates, or a country list; also on the web Config page) (now, 24 hours, 10 days), **Propagation** with a grey-line map, **Best band now**, **On air now** (EiBi), **Space-weather alert**.
 * **Spectrum**, **waterfall** and **live waterfall** on every band.
 * **Internet radio** through a PCM5102 DAC or the PDM output. See [Internet radio](#internet-radio-pcm5102-dac-or-pdm-output).
 * **SWL log:** the FT8/FT4 stations heard, and the CW/RTTY stations whose callsign is decoded twice, kept as ADIF with a signal report; browse it on the receiver or on the web, download it, or upload it to eQSL.cc.
@@ -201,10 +201,10 @@ Then choose **Input: Mic** in the Decode menu and set the volume so the speaker 
 
 99 memory slots, with names of up to 9 characters.
 
-* **Open:** double-click on the RADIO page (or the **Memories** tile of the SIGNAL page). The screen lists the stored memories on the left (empty slots skipped) and shows the tuned station, its slot, band, mode and signal on the right.
-* **Recall:** rotate to tune from memory to memory; click to stay on the chosen one.
-* **Save:** the frequency you were on is the **+ New** entry: click to save it to the first free slot. The name comes from the RDS station name on FM, or from the EiBi schedule or a known frequency.
-* **Menu:** hold the knob (0.3 s): save, scan, delete. A deleted memory becomes **+ New**, so one click saves it back.
+* **Open:** double-click on the RADIO page (or the **Memories** tile of the SIGNAL page). The screen lists the stored memories on the left with their name and frequency (empty slots skipped) and shows the tuned station, its slot, band, mode and signal on the right.
+* **Recall:** rotate to tune from memory to memory; click to leave the screen on the chosen one.
+* **Save:** the frequency you were on is the **+ New** entry: hold and choose **Save** to store it in the first free slot (a click on it leaves without saving). The name comes from the RDS station name on FM, or from the EiBi schedule or a known frequency.
+* **Menu:** hold the knob (0.3 s): save, scan, delete, **Back to start** (leave on the frequency you came from). A deleted memory becomes **+ New**, so it can be saved back.
 * **Scan:** double-click on the memories screen: 5 s on each memory, or, with the squelch set, as long as a signal opens it (moving on 3 s after it goes away). Click to keep the station, rotate to stop.
 * **Web Memory page:** edit, reorder, export and import. **Import** takes a JSON export, or a CSV list of stations that fills the empty slots:
 
@@ -309,6 +309,19 @@ Notes:
 * The decoders using the ADC input need Wi-Fi off, so the API is not reachable meanwhile: save the picture, then turn Wi-Fi on to download it.
 
 ## Version history
+
+### Version 1.10
+
+#### Added
+
+* **SSTV: Start now** in the hold menu: receives right away in the selected mode (or the mode of the last image), without waiting for the VIS header or sync pulses, and locks on the line sync as soon as it finds one. A selected mode also starts by itself more easily (3 regular sync pulses instead of 4, with a looser timing).
+* **Home location anywhere in the world:** **Search any city...** (worldwide) and **Enter coordinates...** (latitude and longitude, with an optional name) in the Weather location menu, and a **Home Location** section with a worldwide search on the web Config page. The country of the chosen city becomes **My country** of the Internet radio.
+* **Memories screen: Back to start** in the menu, to leave on the frequency the screen was opened on.
+
+#### Changed
+
+* **Memories screen:** each memory shows its name and its frequency. A click on **+ New** leaves without saving; save with hold, then **Save**.
+* **FT8/FT4:** the decoded messages use a smaller font, 7 lines instead of 4; **Text: large** in the menu brings back the larger font.
 
 ### Version 1.09
 
