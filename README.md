@@ -12,6 +12,7 @@ All the credit for the receiver firmware itself (tuning, display, menus, memorie
 
 ## Contents
 
+* [Screenshots](#screenshots)
 * [Installing](#installing)
 * [Features](#features)
 * [Internet radio: PCM5102 DAC or PDM output](#internet-radio-pcm5102-dac-or-pdm-output)
@@ -20,6 +21,16 @@ All the credit for the receiver firmware itself (tuning, display, menus, memorie
 * [MQTT](#mqtt)
 * [REST API](#rest-api)
 * [Version history](#version-history)
+
+## Screenshots
+
+| | |
+|:-:|:-:|
+| ![RADIO page](screenshots/01-radio.png)<br>RADIO page with RDS and S-meter | ![Quick menu](screenshots/02-quick-menu.png)<br>Quick menu |
+| ![SIGNAL page](screenshots/03-signal-page.png)<br>SIGNAL page | ![Memories](screenshots/04-memories.png)<br>Memories screen |
+| ![Spectrum](screenshots/05-spectrum.png)<br>FM band spectrum | ![DECODE page](screenshots/06-decode-page.png)<br>DECODE page |
+| ![TOOLS page](screenshots/07-tools-page.png)<br>TOOLS page | ![Weather](screenshots/08-weather.png)<br>Weather |
+| ![Propagation](screenshots/09-propagation.png)<br>Propagation map and band conditions | ![SWL log](screenshots/10-swl-log.png)<br>SWL log of the FT8 stations heard |
 
 ## Installing
 
