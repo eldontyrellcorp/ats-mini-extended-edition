@@ -14,6 +14,7 @@ All the credit for the receiver firmware itself (tuning, display, menus, memorie
 
 * [Screenshots](#screenshots)
 * [Installing](#installing)
+  * [First installation, step by step](#first-installation-step-by-step)
 * [Features](#features)
 * [Internet radio: PCM5102 DAC or PDM output](#internet-radio-pcm5102-dac-or-pdm-output)
 * [Microphone input for the decoders](#microphone-input-for-the-decoders)
@@ -45,25 +46,90 @@ Each release has two variants, one per type of PSRAM on the ESP32-S3 module of t
 
 To find out which one you have, look at **Settings → About** on the receiver: with the right firmware, the PSRAM size is not zero. Over USB, `esptool flash-id` shows `Embedded PSRAM 8MB` (OPI) or `Embedded PSRAM 2MB` (QSPI).
 
-### First installation (USB)
+### First installation, step by step
 
-Each zip holds:
+The first time, the firmware is flashed over USB. Afterwards, updates can be done [over Wi-Fi](#updates-over-wi-fi-from-105).
 
-| File | Flash address | Use |
-|------|---------------|-----|
-| `ats-mini.ino.merged.bin`     | `0x0`     | Everything in one file. Erases the settings. |
-| `ats-mini.ino.bootloader.bin` | `0x0`     | Bootloader |
-| `ats-mini.ino.partitions.bin` | `0x8000`  | Partition table |
-| `boot_app0.bin`               | `0xe000`  | Starts the newly flashed application |
-| `ats-mini.ino.bin`            | `0x10000` | The application |
+**1. What you need**
 
-Flash either the merged file at `0x0`, or the four separate files at their addresses, for example with the [ESP web flasher](https://espressif.github.io/esptool-js/) (Chrome or Edge) or with esptool:
+* The ATS Mini (ESP32-S3 and SI4732), charged or powered over USB.
+* A USB-C **data** cable (some cables only charge: if no port appears in step 4, try another cable).
+* A computer with Windows, macOS or Linux, and Chrome or Edge for the browser method (Firefox and Safari cannot access the USB port).
+
+**2. Back up the stock firmware (optional, recommended)**
+
+To be able to go back to the firmware the receiver came with, save the whole flash once, with [uv](https://docs.astral.sh/uv/getting-started/installation/) installed:
 
 ```
-esptool --chip esp32s3 --port /dev/ttyACM0 write-flash 0x0 ats-mini.ino.merged.bin
+uvx --from esptool esptool --chip esp32s3 --port SERIAL_PORT read-flash 0x0 ALL original-flash.bin
 ```
 
-Hold the BOOT button while connecting the USB cable if the receiver is not detected.
+Replace `SERIAL_PORT` with the port of step 4 (`COM5`, `/dev/ttyACM0`, `/dev/tty.usbmodem1101`...). Restore it later by writing `original-flash.bin` at `0x0`, the same way as the merged file below.
+
+**3. Download the right file**
+
+Open the [latest release](https://github.com/eldontyrellcorp/ats-mini-extended-edition/releases/latest) and download the zip for your receiver, `-OPI.zip` or `-QSPI.zip` (see [Which file](#which-file-opi-or-qspi)). Most recent receivers have an OPI module. If you are not sure, `esptool flash-id` (after step 4) prints `Embedded PSRAM 8MB` for OPI or `Embedded PSRAM 2MB` for QSPI:
+
+```
+uvx --from esptool esptool --port SERIAL_PORT flash-id
+```
+
+Unzip it. You only need `ats-mini.ino.merged.bin`: it holds the bootloader, the partition table and the firmware in one file, flashed at address `0x0`.
+
+**4. Connect the receiver**
+
+Switch the receiver on and connect it to the computer. A new serial port appears:
+
+* Windows: a **USB Serial Device (COMx)** in the Device Manager, under Ports (COM & LPT).
+* macOS: `/dev/tty.usbmodemXXXX`.
+* Linux: `/dev/ttyACM0`. If the port cannot be opened, add your user to the `dialout` group (`sudo usermod -aG dialout $USER`, then log out and in).
+
+If no port appears, or flashing fails to connect: switch the receiver off, hold the **BOOT** button (on the board, if fitted), connect the cable or switch on, then release BOOT. The receiver is then in download mode (the screen stays dark), see also [recovery](https://esp32-si4732.github.io/ats-mini/recovery.html).
+
+**5. Flash**
+
+*In the browser (simplest):*
+
+1. Open <https://espressif.github.io/esptool-js/> in Chrome or Edge.
+2. Set the baud rate to 921600 and press **Connect**, then choose the port of step 4.
+3. Under Program, enter `0x0` as Flash Address and choose `ats-mini.ino.merged.bin`.
+4. Press **Program** and wait until the log shows `Leaving... Hard resetting via RTS pin...` (about one minute).
+5. Press **Disconnect**.
+
+*Or on the command line (Windows, macOS, Linux), with uv:*
+
+```
+uvx --from esptool esptool --chip esp32s3 --port SERIAL_PORT --baud 921600 write-flash -z --flash-mode keep --flash-freq keep --flash-size keep 0x0 ats-mini.ino.merged.bin
+```
+
+*Or on Windows with Espressif's [Flash Download Tool](https://docs.espressif.com/projects/esp-test-tools/en/latest/esp32/production_stage/tools/flash_download_tool.html):* chip ESP32-S3, WorkMode Develop, LoadMode UART, the merged file at `0x0` with its box ticked, the COM port, then **START**.
+
+**6. First start**
+
+Switch the receiver off and on again (or press RESET). The boot picture is shown, then a welcome screen: click the encoder to continue. The merged file starts from fresh settings and memories, so set the language, the [home location](#tools-tools-and-signal-pages) (Weather) and the clock if needed. Check the version and a non-zero PSRAM size in **Settings → About**.
+
+If the screen stays dark, restarts in a loop, or About shows 0 PSRAM, the other variant (OPI/QSPI) is needed: flash the other zip the same way.
+
+**7. Set up Wi-Fi for the next updates**
+
+In **Settings → Wi-Fi**, choose **AP Only**, connect a phone or computer to the `ATS-Mini` network and open <http://10.1.1.1>. On the **Wi-Fi** page enter your home network, then set the receiver to **Connect** (or **AP+Connect**). Future versions then install from **Settings → Update FW** without a cable.
+
+#### Flashing the separate files
+
+To flash without the merged file (the four files at their addresses, for example to keep the settings when coming from another build of this firmware):
+
+| File | Flash address |
+|------|---------------|
+| `ats-mini.ino.bootloader.bin` | `0x0`     |
+| `ats-mini.ino.partitions.bin` | `0x8000`  |
+| `boot_app0.bin`               | `0xe000`  |
+| `ats-mini.ino.bin`            | `0x10000` |
+
+```
+uvx --from esptool esptool --chip esp32s3 --port SERIAL_PORT --baud 921600 write-flash -z --flash-mode keep --flash-freq keep --flash-size keep 0x0 ats-mini.ino.bootloader.bin 0x8000 ats-mini.ino.partitions.bin 0xe000 boot_app0.bin 0x10000 ats-mini.ino.bin
+```
+
+Do not leave out `boot_app0.bin`, or the receiver may keep starting the previous firmware.
 
 ### Updates over Wi-Fi (from 1.05)
 
