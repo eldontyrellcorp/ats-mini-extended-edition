@@ -329,6 +329,7 @@ Notes:
 * **DX map** (Tools page, and in the SWL log): the stations of the SWL log that sent a grid square, whatever the mode, on a world map with their great-circle path from home, the longest first. Rotate to go through them (call, grid, distance, bearing, band, mode, date, report); the menu filters by period (all, 30 days, 7 days, today) and mode, and chooses the paths drawn (the 10 longest, all, or the selected one).
 * **MQTT queue** (Decode menu, or Decode options on the Pages layout): with the ADC input the decoders switch Wi-Fi off by themselves instead of refusing to start. The MQTT messages (FT8/FT4, CW/RTTY text, SWL log) are kept, up to 512, and sent with their time (`at`) once Wi-Fi is back; FT8/FT4 send them every 5 minutes, giving up one slot. `online` reads `paused` meanwhile, and the MQTT `decode` command works with the ADC input.
 * **Remote control:** `P`/`p` flip the pages of the Pages layout, and screenshots (`C`) work inside the full-screen tools.
+* **Boot picture:** a new built-in picture is shown for 2 seconds at power-on; a splash image uploaded on the web Config page still replaces it.
 
 ### Version 1.10
 
