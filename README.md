@@ -96,7 +96,7 @@ From 1.04 or older, upload `ats-mini.ino.bin` with **Manual upload** on the web 
 * **CW** with presets, **RTTY** (amateur and DWD weather presets, baud rate and shift, automatic tones, tone hold), **PSK31** (carrier tracking, squelch).
 * **SSTV** (Martin, Scottie, Robot, PD, B/W; automatic from the VIS header, or a chosen mode with **Start now**) and **WEFAX**, with up to five saved pictures.
 * **Beacons:** the 18 NCDXF/IARU beacons on 14.100 ... 28.200 MHz.
-* **Input:** the receiver audio on IO11 (ADC, default, with Wi-Fi off) or an INMP441 I2S microphone (**Input: Mic**, works with Wi-Fi on).
+* **Input:** the receiver audio on IO11 (ADC, default, with Wi-Fi off) or an INMP441 I2S microphone (**Input: Mic**, works with Wi-Fi on). With **MQTT queue** on, the decoders switch Wi-Fi off by themselves and send the MQTT messages later.
 * In every decoder: input level meter, speaker on/off, knob as volume control, seven waterfall color presets and a noise filter.
 
 ### Tools (TOOLS and SIGNAL pages)
@@ -105,6 +105,7 @@ From 1.04 or older, upload `ats-mini.ino.bin` with **Manual upload** on the web 
 * **Spectrum**, **waterfall** and **live waterfall** on every band.
 * **Internet radio** through a PCM5102 DAC or the PDM output. See [Internet radio](#internet-radio-pcm5102-dac-or-pdm-output).
 * **SWL log:** the FT8/FT4 stations heard, and the CW/RTTY stations whose callsign is decoded twice, kept as ADIF with a signal report; browse it on the receiver or on the web, download it, or upload it to eQSL.cc.
+* **DX map:** the stations of the SWL log with a grid square on a world map with their paths from home, the longest first.
 * **Bricks** game.
 
 ### Network
@@ -236,7 +237,7 @@ Published under the base topic (JSON unless stated):
 
 | Topic | Content |
 |-------|---------|
-| `online` | `online` / `offline` (retained, last will) |
+| `online` | `online` / `offline` (retained, last will), `paused` while a decoder has Wi-Fi off |
 | `state` | `frequency` (Hz), `band`, `mode`, `step`, `bandwidth`, `agc`, `volume`, `muted`, `rssi`, `snr`, `battery`, `version`, `screen` (retained, on changes and every minute) |
 | `rds` | FM `ps`, `rt`, `info`, `pi`, frequency (retained) |
 | `ft8`, `ft4` | Each decoded message: `time`, `dial`, `audio`, `snr`, `text` |
@@ -253,7 +254,7 @@ mosquitto_pub -h broker.local -t ats-mini/a1b2c3/cmd/band -m 20M
 mosquitto_pub -h broker.local -t ats-mini/a1b2c3/cmd/decode -m ft8
 ```
 
-With the ADC input the decoders need Wi-Fi off, so `decode` is refused: use **Input: Mic**. Anyone who can publish on the broker controls the receiver: protect the broker with a password, or leave **Remote Control** off.
+With the ADC input the decoders need Wi-Fi off, so `decode` is refused: use **Input: Mic**, or turn **MQTT queue** on in the Decode menu. The decoders then switch Wi-Fi off themselves and keep the messages (up to 512), sent with an `at` field (UTC time of the event) when the decoder closes, and every 5 minutes from FT8/FT4 (one slot is skipped for it). Anyone who can publish on the broker controls the receiver: protect the broker with a password, or leave **Remote Control** off.
 
 ### Home Assistant
 
@@ -320,6 +321,14 @@ Notes:
 * The decoders using the ADC input need Wi-Fi off, so the API is not reachable meanwhile: save the picture, then turn Wi-Fi on to download it.
 
 ## Version history
+
+### Version 1.11
+
+#### Added
+
+* **DX map** (Tools page, and in the SWL log): the stations of the SWL log that sent a grid square, whatever the mode, on a world map with their great-circle path from home, the longest first. Rotate to go through them (call, grid, distance, bearing, band, mode, date, report); the menu filters by period (all, 30 days, 7 days, today) and mode, and chooses the paths drawn (the 10 longest, all, or the selected one).
+* **MQTT queue** (Decode menu, or Decode options on the Pages layout): with the ADC input the decoders switch Wi-Fi off by themselves instead of refusing to start. The MQTT messages (FT8/FT4, CW/RTTY text, SWL log) are kept, up to 512, and sent with their time (`at`) once Wi-Fi is back; FT8/FT4 send them every 5 minutes, giving up one slot. `online` reads `paused` meanwhile, and the MQTT `decode` command works with the ADC input.
+* **Remote control:** `P`/`p` flip the pages of the Pages layout, and screenshots (`C`) work inside the full-screen tools.
 
 ### Version 1.10
 
