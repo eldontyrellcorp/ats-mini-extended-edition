@@ -162,16 +162,18 @@ From 1.04 or older, upload `ats-mini.ino.bin` with **Manual upload** on the web 
 * **CW** with presets, **RTTY** (amateur and DWD weather presets, baud rate and shift, automatic tones, tone hold), **PSK31** (carrier tracking, squelch).
 * **SSTV** (Martin, Scottie, Robot, PD, B/W; automatic from the VIS header, or a chosen mode with **Start now**) and **WEFAX**, with up to five saved pictures.
 * **Beacons:** the 18 NCDXF/IARU beacons on 14.100 ... 28.200 MHz.
+* **NAVTEX** maritime safety messages on 518, 490 and 4209.5 kHz, with a list of the messages received.
 * **Input:** the receiver audio on IO11 (ADC, default, with Wi-Fi off) or an INMP441 I2S microphone (**Input: Mic**, works with Wi-Fi on). With **MQTT queue** on, the decoders switch Wi-Fi off by themselves and send the MQTT messages later.
 * In every decoder: input level meter, speaker on/off, knob as volume control, seven waterfall color presets and a noise filter.
 
 ### Tools (TOOLS and SIGNAL pages)
 
-* **Weather** for your home location anywhere in the world (city search worldwide, coordinates, or a country list; also on the web Config page) (now, 24 hours, 10 days), **Propagation** with a grey-line map, **Best band now**, **On air now** (EiBi), **Space-weather alert**.
+* **Weather** for your home location anywhere in the world (city search worldwide, coordinates, or a country list; also on the web Config page) (now, 24 hours, 10 days, Celsius or Fahrenheit; the current weather also on the RADIO page), **Propagation** with a grey-line map, **Best band now**, **On air now** (EiBi), **Space-weather alert**.
 * **Spectrum**, **waterfall** and **live waterfall** on every band.
 * **Internet radio** through a PCM5102 DAC or the PDM output. See [Internet radio](#internet-radio-pcm5102-dac-or-pdm-output).
 * **SWL log:** the FT8/FT4 stations heard, and the CW/RTTY stations whose callsign is decoded twice, kept as ADIF with a signal report; browse it on the receiver or on the web, download it, or upload it to eQSL.cc.
 * **DX map:** the stations of the SWL log with a grid square on a world map with their paths from home, the longest first.
+* **DX cluster:** live spots from a telnet DX cluster (or the Reverse Beacon Network), tune to a spot in one click.
 * **Bricks** game.
 
 ### Network
@@ -387,6 +389,19 @@ Notes:
 * The decoders using the ADC input need Wi-Fi off, so the API is not reachable meanwhile: save the picture, then turn Wi-Fi on to download it.
 
 ## Version history
+
+### Version 1.12
+
+**Added**
+
+* **NAVTEX** decoder (Decode).
+* **DX cluster** spots, tune in one click (Tools).
+* **Weather** on the RADIO page, and Fahrenheit.
+* **Update FW** shows what is new first.
+
+**Changed**
+
+* Firmware about 270 KB smaller.
 
 ### Version 1.11
 
